@@ -41,7 +41,7 @@ server {
 	root /home/project;
 
 	# Add index.php to the list if you are using PHP
-	index index.html index.htm index.nginx-debian.html www/index.php;
+	index www/index.php;
 
 	server_name _;
 
@@ -53,20 +53,17 @@ server {
 
     # Api requests
     location /api {
-        fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME /home/project/www/index.php;
+        rewrite ^/api/(.*)/?$ /www/index.php?uri=$1 last;
     }
 
 	# pass PHP scripts to FastCGI server
-	#
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
 
 		# With php-fpm (or other unix sockets):
 		fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
-	#	# With php-cgi (or other tcp sockets):
-	#	fastcgi_pass 127.0.0.1:9000;
+	    # With php-cgi (or other tcp sockets):
+	    # fastcgi_pass 127.0.0.1:9000;
 	}
 
 	# deny access to .htaccess files, if Apache's document root
