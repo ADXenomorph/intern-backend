@@ -4,6 +4,7 @@ namespace Controller;
 
 use DB\Connection;
 use Exception;
+use JsonResponse;
 
 class UsersController
 {
@@ -39,7 +40,7 @@ class UsersController
     {
         $res = $this->dbconn->select("SELECT * FROM public.user");
 
-        $this->returnResponse($res);
+        JsonResponse::returnResponse($res);
     }
 
     private function post()
@@ -76,7 +77,7 @@ class UsersController
             )
         );
 
-        $this->returnResponse($res[0]);
+        JsonResponse::returnResponse($res[0]);
     }
 
     private function create($post)
@@ -93,7 +94,7 @@ class UsersController
             )
         );
 
-        $this->returnResponse($res[0]);
+        JsonResponse::returnResponse($res[0]);
     }
 
     private function delete()
@@ -105,31 +106,9 @@ class UsersController
                 sprintf("DELETE FROM public.user WHERE user_id = %s", $id)
             );
 
-            $this->returnResponse([]);
+            JsonResponse::returnResponse([]);
         } else {
-            $this->returnError('Invalid URI to delete user');
+            JsonResponse::returnError('Invalid URI to delete user');
         }
-    }
-
-    private function returnResponse(array $payload)
-    {
-        echo json_encode([
-            'status' => 0,
-            'message' => '',
-            'payload' => $payload
-        ]);
-
-        exit;
-    }
-
-    private function returnError(string $message)
-    {
-        echo json_encode([
-            'status' => 500,
-            'message' => $message,
-            'payload' => []
-        ]);
-
-        exit;
     }
 }
