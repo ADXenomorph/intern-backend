@@ -53,7 +53,7 @@ server {
 
     # Api requests
     location /api {
-        rewrite ^/api/(.*)/?$ /www/index.php?uri=$1 last;
+        rewrite ^/api/.*$ /www/index.php last;
     }
 
     # pass PHP scripts to FastCGI server

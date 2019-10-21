@@ -10,4 +10,6 @@ $config = new Config(
     "host=localhost port=5432 dbname=roowix user=postgres password=12345",
     $routesConfig
 );
-(new App($config))->run($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'], $_GET, $_POST);
+$postJson = file_get_contents("php://input");
+$post = json_decode($postJson, true);
+(new App($config))->run($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'], $_GET, $post);

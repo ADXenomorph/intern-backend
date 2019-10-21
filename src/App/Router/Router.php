@@ -17,7 +17,7 @@ class Router
             $regexRoute = $route;
             $regexRoute = str_replace('/', '\/', $regexRoute);
             $regexRoute = preg_replace('/{.*}/', '[0-9a-zA-Z-]*', $regexRoute);
-            $regexRoute = '/^' . $regexRoute . '$/';
+            $regexRoute = '/^' . $regexRoute . '[^\/]*/';
             $this->routerConfig[$route] = [
                 'class' => $className,
                 'regex' => $regexRoute,
