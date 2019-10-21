@@ -4,17 +4,17 @@ namespace Controller;
 
 use App\Request;
 use App\Response\Response;
-use DB\Connection;
 use Exception;
+use Model\EntityStorageInterface;
 
 class UsersController implements ControllerInterface
 {
-    /** @var Connection */
-    private $dbconn;
+    /** @var EntityStorageInterface */
+    private $userStorage;
 
-    public function __construct(Connection $dbconn)
+    public function __construct(EntityStorageInterface $userStorage)
     {
-        $this->dbconn = $dbconn;
+        $this->userStorage = $userStorage;
     }
 
     /**
@@ -27,7 +27,7 @@ class UsersController implements ControllerInterface
     {
         switch ($request->getMethod()) {
             case 'GET':
-                return $this->getAll();
+                return $this->get($request);
                 break;
             case 'POST':
                 return $this->post($request);
@@ -40,9 +40,13 @@ class UsersController implements ControllerInterface
         }
     }
 
-    private function getAll(): Response
+    private function get(Request $request): Response
     {
-        $res = $this->dbconn->select("SELECT * FROM public.user");
+        $filter = $request->has('user_id')
+            ? ['user_id' => $request->requireParam('user_id')]
+            : [];
+
+        $res = $this->userStorage->find($filter);
 
         return $this->returnResponse($res);
     }
@@ -58,7 +62,7 @@ class UsersController implements ControllerInterface
 
     private function exists(int $userId): bool
     {
-        $res = $this->dbconn->select("SELECT * FROM public.user WHERE user_id = " . $userId);
+        $res = $this->userStorage->find(["user_id" => $userId]);
 
         return !empty($res);
     }
@@ -69,18 +73,9 @@ class UsersController implements ControllerInterface
         $firstName = $request->requireParam('first_name');
         $lastName = $request->requireParam('last_name');
 
-        $res = $this->dbconn->query(
-            sprintf(
-                "
-                    UPDATE public.user 
-                    SET first_name = '%s', last_name = '%s' 
-                    WHERE user_id = %s
-                    RETURNING *
-                ",
-                $firstName,
-                $lastName,
-                $id
-            )
+        $res = $this->userStorage->update(
+            ['first_name' => $firstName, 'last_name' => $lastName],
+            ['user_id' => $id]
         );
 
         return $this->returnResponse($res[0]);
@@ -91,28 +86,16 @@ class UsersController implements ControllerInterface
         $firstName = $request->requireParam('first_name');
         $lastName = $request->requireParam('last_name');
 
-        $res = $this->dbconn->query(
-            sprintf(
-                "
-                    INSERT INTO public.user(first_name, last_name, created_at, updated_at) VALUES 
-                    ('%s', '%s', NOW(), NOW())
-                    RETURNING *
-                ",
-                $firstName,
-                $lastName
-            )
-        );
+        $res = $this->userStorage->create(['first_name' => $firstName, 'last_name' => $lastName]);
 
         return $this->returnResponse($res[0]);
     }
 
     private function delete(Request $request): Response
     {
-        $id = $request->requireParam('id');
+        $id = $request->requireParam('user_id');
 
-        $this->dbconn->query(
-            sprintf("DELETE FROM public.user WHERE user_id = %s", $id)
-        );
+        $this->userStorage->delete(['user_id' => $id]);
 
         return $this->returnResponse([]);
     }

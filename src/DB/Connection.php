@@ -21,7 +21,7 @@ class Connection
     {
         $queryResult = pg_query($this->connection, $query);
 
-        return pg_fetch_all($queryResult);
+        return pg_fetch_all($queryResult) ?? [];
     }
 
     public function query(string $query)

@@ -4,17 +4,17 @@ namespace Controller;
 
 use App\Request;
 use App\Response\Response;
-use DB\Connection;
 use Exception;
+use Model\EntityStorageInterface;
 
 class OrdersController implements ControllerInterface
 {
-    /** @var Connection */
-    private $dbconn;
+    /** @var EntityStorageInterface */
+    private $ordersStorage;
 
-    public function __construct(Connection $dbconn)
+    public function __construct(EntityStorageInterface $ordersStorage)
     {
-        $this->dbconn = $dbconn;
+        $this->ordersStorage = $ordersStorage;
     }
 
     /**
@@ -27,7 +27,7 @@ class OrdersController implements ControllerInterface
     {
         switch ($request->getMethod()) {
             case 'GET':
-                return $this->getAll();
+                return $this->find($request);
                 break;
             case 'POST':
                 return $this->post($request);
@@ -40,9 +40,13 @@ class OrdersController implements ControllerInterface
         }
     }
 
-    private function getAll(): Response
+    private function find(Request $request): Response
     {
-        $res = $this->dbconn->select("SELECT * FROM public.order");
+        $filter = $request->has('order_id')
+            ? ['order_id' => $request->requireParam('order_id')]
+            : [];
+
+        $res = $this->ordersStorage->find($filter);
 
         return $this->returnResponse($res);
     }
@@ -58,7 +62,7 @@ class OrdersController implements ControllerInterface
 
     private function exists(int $orderId): bool
     {
-        $res = $this->dbconn->select("SELECT * FROM public.order WHERE order_id = " . $orderId);
+        $res = $this->ordersStorage->find(["order_id" => $orderId]);
 
         return !empty($res);
     }
@@ -69,18 +73,9 @@ class OrdersController implements ControllerInterface
         $itemName = $request->requireParam('item_name');
         $orderId = $request->requireParam('order_id');
 
-        $res = $this->dbconn->query(
-            sprintf(
-                "
-                    UPDATE public.order 
-                    SET user_id = %s, item_name = '%s' 
-                    WHERE order_id = %s
-                    RETURNING *
-                ",
-                $id,
-                $itemName,
-                $orderId
-            )
+        $res = $this->ordersStorage->update(
+            ['user_id' => $id, 'item_name' => $itemName],
+            ['order_id' => $orderId]
         );
 
         return $this->returnResponse($res[0]);
@@ -91,28 +86,16 @@ class OrdersController implements ControllerInterface
         $id = $request->requireParam('user_id');
         $itemName = $request->requireParam('item_name');
 
-        $res = $this->dbconn->query(
-            sprintf(
-                "
-                    INSERT INTO public.order(user_id, item_name, created_at, updated_at) VALUES 
-                    (%s, '%s', NOW(), NOW())
-                    RETURNING *
-                ",
-                $id,
-                $itemName
-            )
-        );
+        $res = $this->ordersStorage->create(['user_id' => $id, 'item_name' => $itemName]);
 
         return $this->returnResponse($res[0]);
     }
 
     private function delete(Request $request): Response
     {
-        $id = $request->requireParam('id');
+        $id = $request->requireParam('order_id');
 
-        $this->dbconn->query(
-            sprintf("DELETE FROM public.order WHERE order_id = %s", $id)
-        );
+        $this->ordersStorage->delete(['order_id' => $id]);
 
         return $this->returnResponse([]);
     }

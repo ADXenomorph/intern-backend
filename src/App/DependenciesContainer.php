@@ -5,6 +5,7 @@ namespace App;
 use Controller\OrdersController;
 use Controller\UsersController;
 use DB\Connection;
+use DB\PostgresEntityStorage;
 use Exception;
 
 class DependenciesContainer
@@ -19,8 +20,18 @@ class DependenciesContainer
         $this->config = $config;
 
         $this->container = [Connection::class => new Connection($config->getConnectionString())];
-        $this->container[UsersController::class] = new UsersController($this->container[Connection::class]);
-        $this->container[OrdersController::class] = new OrdersController($this->container[Connection::class]);
+
+        $userStorage = new PostgresEntityStorage(
+            $this->container[Connection::class],
+            'public.user'
+        );
+        $orderStorage = new PostgresEntityStorage(
+            $this->container[Connection::class],
+            'public.order'
+        );
+
+        $this->container[UsersController::class] = new UsersController($userStorage);
+        $this->container[OrdersController::class] = new OrdersController($orderStorage);
     }
 
     /**
