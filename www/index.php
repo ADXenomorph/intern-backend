@@ -11,5 +11,5 @@ $config = new Config(
     $routesConfig
 );
 $postJson = file_get_contents("php://input");
-$post = json_decode($postJson, true);
+$post = $postJson ? json_decode($postJson, true) : [];
 (new App($config))->run($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'], $_GET, $post);
