@@ -2,9 +2,7 @@
 
 namespace Model\Item;
 
-use Exception;
-
-class Keyboard implements ItemInterface
+class Keyboard implements ItemInterface, WirelessInterface
 {
     /** @var string */
     private $name;
@@ -22,15 +20,5 @@ class Keyboard implements ItemInterface
     public function isWireless(): bool
     {
         return strpos(strtolower($this->getName()), 'wireless') !== false;
-    }
-
-    public function hasScreenSize(): bool
-    {
-        return false;
-    }
-
-    public function getScreenSize(): float
-    {
-        throw new Exception('Keyboards dont have screens');
     }
 }

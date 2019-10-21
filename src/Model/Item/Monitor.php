@@ -4,7 +4,7 @@ namespace Model\Item;
 
 use Exception;
 
-class Monitor implements ItemInterface
+class Monitor implements ItemInterface, ScreenInterface
 {
     /** @var string */
     private $name;
@@ -17,17 +17,6 @@ class Monitor implements ItemInterface
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function isWireless(): bool
-    {
-        return false;
-    }
-
-    public function hasScreenSize(): bool
-    {
-        preg_match('/\d*[ ]*(?=inch)/', $this->getName(), $res);
-        return $res && $res[0];
     }
 
     public function getScreenSize(): float

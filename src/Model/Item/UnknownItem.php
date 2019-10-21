@@ -16,19 +16,4 @@ class UnknownItem implements ItemInterface
     {
         return $this->name;
     }
-
-    public function isWireless(): bool
-    {
-        return false;
-    }
-
-    public function hasScreenSize(): bool
-    {
-        return false;
-    }
-
-    public function getScreenSize(): float
-    {
-        return 0;
-    }
 }

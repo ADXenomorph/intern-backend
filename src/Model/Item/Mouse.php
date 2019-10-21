@@ -4,7 +4,7 @@ namespace Model\Item;
 
 use Exception;
 
-class Mouse implements ItemInterface
+class Mouse implements ItemInterface, WirelessInterface
 {
     /** @var string */
     private $name;
@@ -22,15 +22,5 @@ class Mouse implements ItemInterface
     public function isWireless(): bool
     {
         return strpos(strtolower($this->getName()), 'wireless') !== false;
-    }
-
-    public function hasScreenSize(): bool
-    {
-        return false;
-    }
-
-    public function getScreenSize(): float
-    {
-        throw new Exception('Mouses dont have screens');
     }
 }
