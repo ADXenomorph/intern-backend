@@ -2,10 +2,12 @@
 
 namespace Controller;
 
+use App\Request;
+use App\Response\Response;
 use DB\Connection;
 use Exception;
 
-class UsersController
+class UsersController implements ControllerInterface
 {
     /** @var Connection */
     private $dbconn;
@@ -16,52 +18,57 @@ class UsersController
     }
 
     /**
+     * @param Request $request
+     *
+     * @return Response
      * @throws Exception
      */
-    public function handleRequest()
+    public function run(Request $request): Response
     {
-        switch ($_SERVER['REQUEST_METHOD']) {
+        switch ($request->getMethod()) {
             case 'GET':
-                $this->getAll();
+                return $this->getAll();
                 break;
             case 'POST':
-                $this->post();
+                return $this->post($request);
                 break;
             case 'DELETE':
-                $this->delete();
+                return $this->delete($request);
                 break;
             default:
-                throw new Exception('Unsupported method ' . $_SERVER['REQUEST_METHOD']);
+                throw new Exception('Unsupported method ' . $request->getMethod());
         }
     }
 
-    private function getAll()
+    private function getAll(): Response
     {
         $res = $this->dbconn->select("SELECT * FROM public.user");
 
-        $this->returnResponse($res);
+        return $this->returnResponse($res);
     }
 
-    private function post()
+    private function post(Request $request): Response
     {
-        $json = file_get_contents("php://input");
-        $post = json_decode($json, true);
-        if (isset($post['user_id']) && $this->exists($post['user_id'])) {
-            $this->update($post);
+        if ($request->has('user_id') && $this->exists($request->requireParam('user_id'))) {
+            return $this->update($request);
         } else {
-            $this->create($post);
+            return $this->create($request);
         }
     }
 
-    private function exists($userId)
+    private function exists(int $userId): bool
     {
         $res = $this->dbconn->select("SELECT * FROM public.user WHERE user_id = " . $userId);
 
         return !empty($res);
     }
 
-    private function update($post)
+    private function update(Request $request): Response
     {
+        $id = $request->requireParam('user_id');
+        $firstName = $request->requireParam('first_name');
+        $lastName = $request->requireParam('last_name');
+
         $res = $this->dbconn->query(
             sprintf(
                 "
@@ -70,17 +77,20 @@ class UsersController
                     WHERE user_id = %s
                     RETURNING *
                 ",
-                $post['first_name'],
-                $post['last_name'],
-                $post['user_id']
+                $firstName,
+                $lastName,
+                $id
             )
         );
 
-        $this->returnResponse($res[0]);
+        return $this->returnResponse($res[0]);
     }
 
-    private function create($post)
+    private function create(Request $request): Response
     {
+        $firstName = $request->requireParam('first_name');
+        $lastName = $request->requireParam('last_name');
+
         $res = $this->dbconn->query(
             sprintf(
                 "
@@ -88,48 +98,27 @@ class UsersController
                     ('%s', '%s', NOW(), NOW())
                     RETURNING *
                 ",
-                $post['first_name'],
-                $post['last_name']
+                $firstName,
+                $lastName
             )
         );
 
-        $this->returnResponse($res[0]);
+        return $this->returnResponse($res[0]);
     }
 
-    private function delete()
+    private function delete(Request $request): Response
     {
-        $pieces = explode('/', $_SERVER['REQUEST_URI']);
-        $id = intval($pieces[3]);
-        if ($id) {
-            $this->dbconn->query(
-                sprintf("DELETE FROM public.user WHERE user_id = %s", $id)
-            );
+        $id = $request->requireParam('id');
 
-            $this->returnResponse([]);
-        } else {
-            $this->returnError('Invalid URI to delete user');
-        }
+        $this->dbconn->query(
+            sprintf("DELETE FROM public.user WHERE user_id = %s", $id)
+        );
+
+        return $this->returnResponse([]);
     }
 
-    private function returnResponse(array $payload)
+    private function returnResponse(array $payload): Response
     {
-        echo json_encode([
-            'status' => 0,
-            'message' => '',
-            'payload' => $payload
-        ]);
-
-        exit;
-    }
-
-    private function returnError(string $message)
-    {
-        echo json_encode([
-            'status' => 500,
-            'message' => $message,
-            'payload' => []
-        ]);
-
-        exit;
+        return new Response(0, '', $payload);
     }
 }

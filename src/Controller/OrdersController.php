@@ -2,10 +2,12 @@
 
 namespace Controller;
 
+use App\Request;
+use App\Response\Response;
 use DB\Connection;
 use Exception;
 
-class OrdersController
+class OrdersController implements ControllerInterface
 {
     /** @var Connection */
     private $dbconn;
@@ -16,52 +18,57 @@ class OrdersController
     }
 
     /**
+     * @param Request $request
+     *
+     * @return Response
      * @throws Exception
      */
-    public function handleRequest()
+    public function run(Request $request): Response
     {
-        switch ($_SERVER['REQUEST_METHOD']) {
+        switch ($request->getMethod()) {
             case 'GET':
-                $this->getAll();
+                return $this->getAll();
                 break;
             case 'POST':
-                $this->post();
+                return $this->post($request);
                 break;
             case 'DELETE':
-                $this->delete();
+                return $this->delete($request);
                 break;
             default:
-                throw new Exception('Unsupported method ' . $_SERVER['REQUEST_METHOD']);
+                throw new Exception('Unsupported method ' . $request->getMethod());
         }
     }
 
-    private function getAll()
+    private function getAll(): Response
     {
         $res = $this->dbconn->select("SELECT * FROM public.order");
 
-        $this->returnResponse($res);
+        return $this->returnResponse($res);
     }
 
-    private function post()
+    private function post(Request $request): Response
     {
-        $json = file_get_contents("php://input");
-        $post = json_decode($json, true);
-        if (isset($post['order_id']) && $this->exists($post['order_id'])) {
-            $this->update($post);
+        if ($request->has('order_id') && $this->exists($request->requireParam('order_id'))) {
+            return $this->update($request);
         } else {
-            $this->create($post);
+            return $this->create($request);
         }
     }
 
-    private function exists($orderId)
+    private function exists(int $orderId): bool
     {
         $res = $this->dbconn->select("SELECT * FROM public.order WHERE order_id = " . $orderId);
 
         return !empty($res);
     }
 
-    private function update($post)
+    private function update(Request $request): Response
     {
+        $id = $request->requireParam('user_id');
+        $itemName = $request->requireParam('item_name');
+        $orderId = $request->requireParam('order_id');
+
         $res = $this->dbconn->query(
             sprintf(
                 "
@@ -70,17 +77,20 @@ class OrdersController
                     WHERE order_id = %s
                     RETURNING *
                 ",
-                $post['user_id'],
-                $post['item_name'],
-                $post['order_id']
+                $id,
+                $itemName,
+                $orderId
             )
         );
 
-        $this->returnResponse($res[0]);
+        return $this->returnResponse($res[0]);
     }
 
-    private function create($post)
+    private function create(Request $request): Response
     {
+        $id = $request->requireParam('user_id');
+        $itemName = $request->requireParam('item_name');
+
         $res = $this->dbconn->query(
             sprintf(
                 "
@@ -88,48 +98,27 @@ class OrdersController
                     (%s, '%s', NOW(), NOW())
                     RETURNING *
                 ",
-                $post['user_id'],
-                $post['item_name']
+                $id,
+                $itemName
             )
         );
 
-        $this->returnResponse($res[0]);
+        return $this->returnResponse($res[0]);
     }
 
-    private function delete()
+    private function delete(Request $request): Response
     {
-        $pieces = explode('/', $_SERVER['REQUEST_URI']);
-        $id = intval($pieces[3]);
-        if ($id) {
-            $this->dbconn->query(
-                sprintf("DELETE FROM public.order WHERE order_id = %s", $id)
-            );
+        $id = $request->requireParam('id');
 
-            $this->returnResponse([]);
-        } else {
-            $this->returnError('Invalid URI to delete user');
-        }
+        $this->dbconn->query(
+            sprintf("DELETE FROM public.order WHERE order_id = %s", $id)
+        );
+
+        return $this->returnResponse([]);
     }
 
-    private function returnResponse(array $payload)
+    private function returnResponse(array $payload): Response
     {
-        echo json_encode([
-            'status' => 0,
-            'message' => '',
-            'payload' => $payload
-        ]);
-
-        exit;
-    }
-
-    private function returnError(string $message)
-    {
-        echo json_encode([
-            'status' => 500,
-            'message' => $message,
-            'payload' => []
-        ]);
-
-        exit;
+        return new Response(0, '', $payload);
     }
 }
