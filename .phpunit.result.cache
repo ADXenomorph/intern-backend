@@ -1,1 +1,0 @@
-C:37:"PHPUnit\Runner\DefaultTestResultCache":162:{a:2:{s:7:"defects";a:1:{s:45:"Roowix\Tests\App\Router\RouterTest::testParse";i:5;}s:5:"times";a:1:{s:45:"Roowix\Tests\App\Router\RouterTest::testParse";d:0.002;}}}
