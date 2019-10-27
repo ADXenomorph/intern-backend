@@ -1,7 +1,7 @@
 <?php
 
-use Controller\OrdersController;
-use Controller\UsersController;
+use Roowix\Controller\OrdersController;
+use Roowix\Controller\UsersController;
 
 $routesConfig = [
     '/api/orders' => OrdersController::class,
