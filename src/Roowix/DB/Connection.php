@@ -1,6 +1,6 @@
 <?php
 
-namespace DB;
+namespace Roowix\DB;
 
 class Connection
 {

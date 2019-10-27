@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Router;
+namespace Roowix\App\Router;
 
 use Exception;
 

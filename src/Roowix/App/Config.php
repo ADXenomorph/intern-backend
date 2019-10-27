@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Roowix\App;
 
 class Config
 {

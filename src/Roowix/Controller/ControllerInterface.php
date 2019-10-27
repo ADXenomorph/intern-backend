@@ -1,9 +1,9 @@
 <?php
 
-namespace Controller;
+namespace Roowix\Controller;
 
-use App\Request;
-use App\Response\Response;
+use Roowix\App\Request;
+use Roowix\App\Response\Response;
 
 interface ControllerInterface
 {

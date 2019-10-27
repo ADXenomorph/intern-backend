@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace Roowix\App;
 
-use Controller\OrdersController;
-use Controller\UsersController;
-use DB\Connection;
-use DB\PostgresEntityStorage;
+use Roowix\Controller\OrdersController;
+use Roowix\Controller\UsersController;
+use Roowix\DB\Connection;
+use Roowix\DB\PostgresEntityStorage;
 use Exception;
 
 class DependenciesContainer

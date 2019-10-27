@@ -3,8 +3,8 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config/routes.config.php';
 
-use App\App;
-use App\Config;
+use Roowix\App\App;
+use Roowix\App\Config;
 
 $config = new Config(
     "host=localhost port=5432 dbname=roowix user=postgres password=12345",

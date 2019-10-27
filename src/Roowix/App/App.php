@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace Roowix\App;
 
-use App\Response\JsonResponseWriter;
-use App\Router\Router;
-use Controller\ControllerInterface;
+use Roowix\App\Response\JsonResponseWriter;
+use Roowix\App\Router\Router;
+use Roowix\Controller\ControllerInterface;
 use Exception;
 use Throwable;
 

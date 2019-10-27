@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Response;
+namespace Roowix\App\Response;
 
 class JsonResponseWriter
 {

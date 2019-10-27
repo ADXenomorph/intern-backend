@@ -1,9 +1,9 @@
 <?php
 
-namespace DB;
+namespace Roowix\DB;
 
 use Exception;
-use Model\EntityStorageInterface;
+use Roowix\Model\EntityStorageInterface;
 
 class PostgresEntityStorage implements EntityStorageInterface
 {
