@@ -16,7 +16,12 @@
     },
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "Roowix\\": "src/Roowix/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Roowix\\Tests\\": "tests/Roowix/"
         }
     }
 }
