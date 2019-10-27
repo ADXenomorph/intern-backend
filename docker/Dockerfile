@@ -2,8 +2,8 @@ FROM ubuntu
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-ADD postgres/ /home/postgres/
-ADD nginx/ /home/nginx/
+ADD postgres /home/postgres/
+ADD nginx /home/nginx/
 
 EXPOSE 9001
 
