@@ -2,6 +2,8 @@
 
 namespace Roowix\App;
 
+use Roowix\App\Config\Config;
+use Roowix\App\Config\ConfigYamlReader;
 use Roowix\App\Response\JsonResponseWriter;
 use Roowix\App\Router\Router;
 use Roowix\Controller\ControllerInterface;
@@ -19,14 +21,14 @@ class App
     /** @var JsonResponseWriter */
     private $responseWriter;
 
-    public function __construct(Config $config)
+    public function __construct(string $configPath)
     {
         $this->setExceptionHandlers();
 
-        $this->config = $config;
-        $this->di = new DependenciesContainer($config);
-        $this->router = new Router($config->getRoutes());
-        $this->responseWriter = new JsonResponseWriter();
+        $this->config = (new ConfigYamlReader())->read($configPath);
+        $this->di = new DependenciesContainer($this->config);
+        $this->router = new Router($this->config->getRoutes());
+        $this->responseWriter = $this->di->get(JsonResponseWriter::class);
     }
 
     private function setExceptionHandlers()

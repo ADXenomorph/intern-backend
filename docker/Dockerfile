@@ -21,7 +21,8 @@ RUN apt-get update && apt-get install -yq \
     php7.2-fpm \
     php7.2-dev \
     php-pear \
-    php7.2-mbstring
+    php7.2-mbstring \
+    php-yaml
 
 RUN pecl install xdebug \
     && echo "zend_extension=xdebug.so" >> /etc/php/7.2/mods-available/xdebug.ini \
