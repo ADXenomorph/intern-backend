@@ -4,10 +4,9 @@ namespace Roowix\Controller;
 
 use Roowix\App\Request;
 use Roowix\App\Response\Response;
-use Exception;
 use Roowix\Model\EntityStorageInterface;
 
-class OrdersController implements ControllerInterface
+class OrdersController extends AbstractRestController
 {
     /** @var EntityStorageInterface */
     private $ordersStorage;
@@ -17,30 +16,7 @@ class OrdersController implements ControllerInterface
         $this->ordersStorage = $ordersStorage;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     * @throws Exception
-     */
-    public function run(Request $request): Response
-    {
-        switch ($request->getMethod()) {
-            case 'GET':
-                return $this->find($request);
-                break;
-            case 'POST':
-                return $this->post($request);
-                break;
-            case 'DELETE':
-                return $this->delete($request);
-                break;
-            default:
-                throw new Exception('Unsupported method ' . $request->getMethod());
-        }
-    }
-
-    private function find(Request $request): Response
+    protected function get(Request $request): Response
     {
         $filter = $request->has('order_id')
             ? ['order_id' => $request->requireParam('order_id')]
@@ -51,7 +27,7 @@ class OrdersController implements ControllerInterface
         return $this->returnResponse($res);
     }
 
-    private function post(Request $request): Response
+    protected function post(Request $request): Response
     {
         if ($request->has('order_id') && $this->exists($request->requireParam('order_id'))) {
             return $this->update($request);
@@ -91,17 +67,12 @@ class OrdersController implements ControllerInterface
         return $this->returnResponse($res[0]);
     }
 
-    private function delete(Request $request): Response
+    protected function delete(Request $request): Response
     {
         $id = $request->requireParam('order_id');
 
         $this->ordersStorage->delete(['order_id' => $id]);
 
         return $this->returnResponse([]);
-    }
-
-    private function returnResponse(array $payload): Response
-    {
-        return new Response(0, '', $payload);
     }
 }
