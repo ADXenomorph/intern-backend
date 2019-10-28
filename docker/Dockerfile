@@ -29,7 +29,6 @@ RUN pecl install xdebug \
     && echo "xdebug.remote_handler=dbgp" >> /etc/php/7.2/mods-available/xdebug.ini \
     && echo "xdebug.remote_host=172.17.0.1" >> /etc/php/7.2/mods-available/xdebug.ini \
     && echo "xdebug.remote_port=9001" >> /etc/php/7.2/mods-available/xdebug.ini \
-    && echo "xdebug.remote_log=/var/log/xdebug.log" >> /etc/php/7.2/mods-available/xdebug.ini \
     && ln -s /etc/php/7.2/mods-available/xdebug.ini /etc/php/7.2/fpm/conf.d/20-xdebug.ini \
     && ln -s /etc/php/7.2/mods-available/xdebug.ini /etc/php/7.2/cli/conf.d/20-xdebug.ini
 
