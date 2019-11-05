@@ -31,18 +31,17 @@ Task
 * name
 * type
 * level ?
+* goal
 * assignee_id
+* parent task id
 
 Task progress
 * task_id
 * date
-* progress ?
+* progress
 
 Assignee
 * id
 * name
 * type ?
 
-Task tree
-* task id
-* parent task id

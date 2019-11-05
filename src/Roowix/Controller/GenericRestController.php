@@ -71,10 +71,9 @@ class GenericRestController extends AbstractRestController
 
     protected function delete(Request $request): Response
     {
-        $idName = $this->entityDescription->getIdField();
-        $id = $request->requireParam($idName);
+        $id = $request->requireParam('id');
 
-        $this->entityStorage->delete([$idName => $id]);
+        $this->entityStorage->delete([$this->entityDescription->getIdField() => $id]);
 
         return $this->returnResponse([]);
     }

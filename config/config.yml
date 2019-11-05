@@ -6,12 +6,19 @@ routes:
     /api/orders/{id}: '@orders.controller'
     /api/users/: '@users.controller'
     /api/users/{id}: '@users.controller'
+    /api/tasks/: '@tasks.controller'
+    /api/tasks/{id}: '@tasks.controller'
+    /api/tasks/{task_id}/progress: '@tasks.progress.controller'
+    /api/progress/: '@progress.controller'
+    /api/progress/{id}: '@progress.controller'
+    /api/tree: '@tree.controller'
 
 services:
     postgres.connection:
         class: Roowix\DB\Connection
         arguments:
             - '%connection.string%'
+
     orders.entity.storage:
         class: Roowix\DB\PostgresEntityStorage
         arguments:
@@ -22,6 +29,7 @@ services:
         arguments:
             - '@orders.entity.storage'
             - Roowix\Model\OrderEntityDescription
+
     users.entity.storage:
         class: Roowix\DB\PostgresEntityStorage
         arguments:
@@ -32,3 +40,37 @@ services:
         arguments:
             - '@users.entity.storage'
             - Roowix\Model\UserEntityDescription
+
+    tasks.entity.storage:
+        class: Roowix\DB\PostgresEntityStorage
+        arguments:
+            - '@postgres.connection'
+            - 'public.task'
+    tasks.controller:
+        class: Roowix\Controller\GenericRestController
+        arguments:
+            - '@tasks.entity.storage'
+            - Roowix\Model\TaskEntityDescription
+
+    progress.entity.storage:
+        class: Roowix\DB\PostgresEntityStorage
+        arguments:
+            - '@postgres.connection'
+            - 'public.task_progress'
+    progress.controller:
+        class: Roowix\Controller\GenericRestController
+        arguments:
+            - '@progress.entity.storage'
+            - Roowix\Model\TaskProgressEntityDescription
+
+    tree.controller:
+        class: Roowix\Controller\TreeController
+        arguments:
+            - '@tasks.entity.storage'
+            - '@progress.entity.storage'
+            - Roowix\Model\Tree\TreeFactory
+
+    tasks.progress.controller:
+        class: Roowix\Controller\TasksProgressController
+        arguments:
+            - '@progress.entity.storage'

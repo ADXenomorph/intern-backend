@@ -41,14 +41,14 @@ class PostgresEntityStorage implements EntityStorageInterface
 
         $preparedFields = $this->prepareFieldValues($fields);
 
-        return $this->connection->query(
-            sprintf(
-                "INSERT INTO %s (%s) VALUES (%s) RETURNING *",
-                $this->dbName,
-                join(', ', array_keys($preparedFields)),
-                join(', ', array_values($preparedFields))
-            )
+        $query = sprintf(
+            "INSERT INTO %s (%s) VALUES (%s) RETURNING *",
+            $this->dbName,
+            join(', ', array_keys($preparedFields)),
+            join(', ', array_values($preparedFields))
         );
+
+        return $this->connection->query($query);
     }
 
     public function update(array $fields, array $filter): array
@@ -85,12 +85,18 @@ class PostgresEntityStorage implements EntityStorageInterface
     private function prepareFieldValues(array $fields): array
     {
         foreach ($fields as $key => $value) {
-            if (is_string($value)) {
-                $fields[$key] = sprintf("'%s'", $value);
+            if (is_numeric($value)) {
+                $fields[$key] = is_int($value) ? (int)$value : (float)$value;
                 continue;
             }
 
-            if (is_numeric($value)) {
+            if (is_null($value)) {
+                $fields[$key] = 'NULL';
+                continue;
+            }
+
+            if (is_string($value)) {
+                $fields[$key] = sprintf("'%s'", $value);
                 continue;
             }
 
@@ -106,7 +112,9 @@ class PostgresEntityStorage implements EntityStorageInterface
         $equalPairs = [];
 
         foreach ($fields as $key => $value) {
-            $equalPairs[] = sprintf("%s = %s", $key, $value);
+            $equalPairs[] = $value === null
+                ? sprintf("%s IS NULL", $key)
+                : sprintf("%s = %s", $key, $value);
         }
 
         return $equalPairs;
