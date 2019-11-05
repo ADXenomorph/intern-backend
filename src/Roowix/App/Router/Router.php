@@ -11,15 +11,15 @@ class Router
 
     public function __construct(array $routerConfig)
     {
-        foreach ($routerConfig as $route => $className) {
+        foreach ($routerConfig as $route => $controller) {
             $route = rtrim($route, '/');
 
             $regexRoute = $route;
             $regexRoute = str_replace('/', '\/', $regexRoute);
             $regexRoute = preg_replace('/{.*}/', '[0-9a-zA-Z-]*', $regexRoute);
-            $regexRoute = '/^' . $regexRoute . '[^\/]*/';
+            $regexRoute = '/^' . $regexRoute . '\/?$/';
             $this->routerConfig[$route] = [
-                'class' => $className,
+                'controller' => $controller,
                 'regex' => $regexRoute,
                 'route' => $route
             ];
@@ -30,7 +30,7 @@ class Router
     {
         $route = $this->getRoute($uri);
 
-        return new Route($route['class'], $this->getParams($uri, $route['route']));
+        return new Route($route['controller'], $this->getParams($uri, $route['route']));
     }
 
     private function getRoute(string $uri): array
@@ -48,8 +48,8 @@ class Router
 
     private function getParams(string $uri, string $route): array
     {
-        $uriPieces = explode('/', $uri);
-        $routePieces = explode('/', $route);
+        $uriPieces = explode('/', trim($uri, '/'));
+        $routePieces = explode('/', trim($route, '/'));
 
         if (count($uriPieces) !== count($routePieces)) {
             throw new Exception(sprintf('Incorrect route. Uri: %s, route: %s', $uri, $route));

@@ -17,7 +17,7 @@ class RouterTest extends TestCase
         $route = $router->parse('/api/test');
 
         // assert
-        $this->assertEquals($class, $route->getControllerClass());
+        $this->assertEquals($class, $route->getController());
         $this->assertEmpty($route->getParams());
     }
 
@@ -32,11 +32,11 @@ class RouterTest extends TestCase
         $intRoute = $router->parse('/api/test/123');
 
         // assert
-        $this->assertEquals($class, $stringRoute->getControllerClass());
+        $this->assertEquals($class, $stringRoute->getController());
         $this->assertNotEmpty($stringRoute->getParams());
         $this->assertEquals('value', $stringRoute->getParams()['param']);
 
-        $this->assertEquals($class, $intRoute->getControllerClass());
+        $this->assertEquals($class, $intRoute->getController());
         $this->assertNotEmpty($intRoute->getParams());
         $this->assertEquals('123', $intRoute->getParams()['param']);
     }

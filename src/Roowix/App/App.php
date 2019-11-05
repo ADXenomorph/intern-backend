@@ -58,7 +58,7 @@ class App
         $route = $this->router->parse($uri);
 
         /** @var ControllerInterface $controller */
-        $controller = $this->di->get($route->getControllerClass());
+        $controller = $this->di->get($route->getController());
         if (!$controller || !is_a($controller, ControllerInterface::class)) {
             throw new Exception(
                 sprintf(

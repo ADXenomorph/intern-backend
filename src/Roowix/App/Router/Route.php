@@ -5,19 +5,19 @@ namespace Roowix\App\Router;
 class Route
 {
     /** @var string */
-    private $controllerClass;
+    private $controller;
     /** @var array */
     private $params;
 
-    public function __construct(string $controllerClass, array $params)
+    public function __construct(string $controller, array $params)
     {
-        $this->controllerClass = $controllerClass;
+        $this->controller = $controller;
         $this->params = $params;
     }
 
-    public function getControllerClass(): string
+    public function getController(): string
     {
-        return $this->controllerClass;
+        return $this->controller;
     }
 
     public function getParams(): array

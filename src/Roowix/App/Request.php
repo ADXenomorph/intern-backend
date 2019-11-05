@@ -54,4 +54,9 @@ class Request
     {
         return array_key_exists($name, $this->params);
     }
+
+    public function all(): array
+    {
+        return $this->params;
+    }
 }

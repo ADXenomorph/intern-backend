@@ -2,10 +2,10 @@ properties:
     connection.string: "host=localhost port=5432 dbname=roowix user=postgres password=12345"
 
 routes:
-    /api/orders: Roowix\Controller\OrdersController
-    /api/orders/{order_id}: Roowix\Controller\OrdersController
-    /api/users/: Roowix\Controller\UsersController
-    /api/users/{user_id}: Roowix\Controller\UsersController
+    /api/orders: '@orders.controller'
+    /api/orders/{id}: '@orders.controller'
+    /api/users/: '@users.controller'
+    /api/users/{id}: '@users.controller'
 
 services:
     postgres.connection:
@@ -18,15 +18,17 @@ services:
             - '@postgres.connection'
             - 'public.order'
     orders.controller:
-        class: Roowix\Controller\OrdersController
+        class: Roowix\Controller\GenericRestController
         arguments:
             - '@orders.entity.storage'
+            - Roowix\Model\OrderEntityDescription
     users.entity.storage:
         class: Roowix\DB\PostgresEntityStorage
         arguments:
             - '@postgres.connection'
             - 'public.user'
     users.controller:
-        class: Roowix\Controller\UsersController
+        class: Roowix\Controller\GenericRestController
         arguments:
             - '@users.entity.storage'
+            - Roowix\Model\UserEntityDescription

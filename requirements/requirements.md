@@ -42,8 +42,7 @@ Assignee
 * id
 * name
 * type ?
-  
+
 Task tree
 * task id
 * parent task id
-
