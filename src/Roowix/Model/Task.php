@@ -17,7 +17,7 @@ class Task
     /** @var int|null */
     private $parentTaskId;
 
-    public function __construct(int $taskId, string $name, string $type, int $userId, int $goal, ?int $parentTaskId)
+    public function __construct(int $taskId, string $name, ?string $type, int $userId, int $goal, ?int $parentTaskId)
     {
         $this->taskId = $taskId;
         $this->name = $name;

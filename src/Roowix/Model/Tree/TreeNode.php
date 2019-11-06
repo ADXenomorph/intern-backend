@@ -14,6 +14,8 @@ class TreeNode
     private $currentProgress;
     /** @var int */
     private $goal;
+    /** @var float */
+    private $percent;
     /** @var int|null */
     private $parentTaskId;
 
@@ -23,6 +25,7 @@ class TreeNode
         int $userId,
         int $currentProgress,
         int $goal,
+        float $percent,
         ?int $parentTaskId
     ) {
         $this->taskId = $taskId;
@@ -30,6 +33,7 @@ class TreeNode
         $this->userId = $userId;
         $this->currentProgress = $currentProgress;
         $this->goal = $goal;
+        $this->percent = $percent;
         $this->parentTaskId = $parentTaskId;
     }
 
@@ -41,6 +45,7 @@ class TreeNode
             'user_id' => $this->userId,
             'current_progress' => $this->currentProgress,
             'goal' => $this->goal,
+            'percent' => $this->percent,
             'parent_task_id' => $this->parentTaskId,
         ];
     }
