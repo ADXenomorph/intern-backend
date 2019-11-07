@@ -33,7 +33,8 @@ class GenericRestController extends AbstractRestController
 
     protected function post(Request $request): Response
     {
-        if ($request->has('id') && $this->exists($request->requireParam('id'))) {
+        $idName = $this->entityDescription->getIdField();
+        if ($request->has($idName) && $this->exists($request->requireParam($idName))) {
             return $this->update($request);
         } else {
             return $this->create($request);
