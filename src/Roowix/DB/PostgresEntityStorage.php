@@ -3,7 +3,7 @@
 namespace Roowix\DB;
 
 use Exception;
-use Roowix\Model\EntityStorageInterface;
+use Roowix\Model\Storage\EntityStorageInterface;
 
 class PostgresEntityStorage implements EntityStorageInterface
 {

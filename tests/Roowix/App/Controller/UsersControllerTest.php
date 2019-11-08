@@ -6,7 +6,7 @@ use Roowix\App\Request;
 use PHPUnit\Framework\TestCase;
 use Roowix\App\Response\Response;
 use Roowix\Controller\UsersController;
-use Roowix\Model\EntityStorageInterface;
+use Roowix\Model\Storage\EntityStorageInterface;
 use Roowix\Tests\Utils\InMemoryEntityStorage;
 
 class UsersControllerTest extends TestCase

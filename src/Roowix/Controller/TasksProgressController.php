@@ -4,7 +4,7 @@ namespace Roowix\Controller;
 
 use Roowix\App\Request;
 use Roowix\App\Response\Response;
-use Roowix\Model\EntityStorageInterface;
+use Roowix\Model\Storage\EntityStorageInterface;
 
 class TasksProgressController extends AbstractRestController
 {

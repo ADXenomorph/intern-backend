@@ -2,7 +2,7 @@
 
 namespace Roowix\Tests\Utils;
 
-use Roowix\Model\EntityStorageInterface;
+use Roowix\Model\Storage\EntityStorageInterface;
 
 class InMemoryEntityStorage implements EntityStorageInterface
 {

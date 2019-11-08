@@ -1,6 +1,6 @@
 <?php
 
-namespace Roowix\Model;
+namespace Roowix\Model\Storage;
 
 interface EntityStorageInterface
 {
