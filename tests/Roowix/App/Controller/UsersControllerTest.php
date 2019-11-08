@@ -6,7 +6,6 @@ use Roowix\App\Request;
 use PHPUnit\Framework\TestCase;
 use Roowix\App\Response\Response;
 use Roowix\Controller\UsersController;
-use Roowix\Model\Storage\EntityStorageInterface;
 use Roowix\Tests\Utils\InMemoryEntityStorage;
 
 class UsersControllerTest extends TestCase
@@ -15,10 +14,6 @@ class UsersControllerTest extends TestCase
     {
         // arrange
         $expectedResult = [['first_name' => 'Sergey']];
-        $mock = $this->getMockBuilder(EntityStorageInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->method('find')->willReturn($expectedResult);
         $testStorage = new InMemoryEntityStorage();
         $testStorage->create($expectedResult);
         $ctrl = new UsersController($testStorage);

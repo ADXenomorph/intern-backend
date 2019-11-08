@@ -2,6 +2,8 @@
 
 namespace Roowix\Tests\Model\Tree;
 
+use Roowix\Model\Storage\ProgressEntity;
+use Roowix\Model\Storage\TaskEntity;
 use Roowix\Model\Task;
 use Roowix\Model\TaskProgress;
 use Roowix\Model\Tree\TreeFactory;
@@ -14,17 +16,16 @@ class TreeFactoryTest extends TestCase
         // arrange
         $factory = new TreeFactory();
         $tasks = [
-            new Task(1, 'task1', '', 1, 10, null),
-            new Task(2, 'task2', '', 1, 100, 1),
-            new Task(3, 'task3', '', 1, 123, 1),
+            (new TaskEntity())->setTaskId(1)->setName('task1')->setUserId(1)->setGoal(10),
+            (new TaskEntity())->setTaskId(2)->setName('task2')->setUserId(1)->setGoal(100),
+            (new TaskEntity())->setTaskId(3)->setName('task3')->setUserId(1)->setGoal(123),
         ];
+        $date = date('Y-m-d H:i:s', strtotime('-1 week'));
         $progress = [
-            new TaskProgress(0, 1, date('Y-m-d H:i:s', strtotime('-1 week')), 2),
-            new TaskProgress(0, 1, date('Y-m-d H:i:s', strtotime('-1 week')), 3),
-
-            new TaskProgress(0, 2, date('Y-m-d H:i:s', strtotime('-1 week')), 100),
-
-            new TaskProgress(0, 3, date('Y-m-d H:i:s', strtotime('-1 week')), 200),
+            (new ProgressEntity())->setTaskId(1)->setCreatedAt($date)->setProgress(2),
+            (new ProgressEntity())->setTaskId(1)->setCreatedAt($date)->setProgress(3),
+            (new ProgressEntity())->setTaskId(2)->setCreatedAt($date)->setProgress(100),
+            (new ProgressEntity())->setTaskId(3)->setCreatedAt($date)->setProgress(200)
         ];
 
         // act

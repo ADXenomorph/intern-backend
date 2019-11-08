@@ -2,14 +2,14 @@
 
 namespace Roowix\Model\Tree;
 
-use Roowix\Model\Task;
-use Roowix\Model\TaskProgress;
+use Roowix\Model\Storage\ProgressEntity;
+use Roowix\Model\Storage\TaskEntity;
 
 class TreeFactory
 {
     /**
-     * @param Task[] $tasks
-     * @param TaskProgress[] $progressList
+     * @param TaskEntity[] $tasks
+     * @param ProgressEntity[] $progressList
      *
      * @return Tree
      */
@@ -33,7 +33,7 @@ class TreeFactory
     }
 
     /**
-     * @param TaskProgress[] $progressList
+     * @param ProgressEntity[] $progressList
      * @param int $taskId
      *
      * @return int
@@ -50,7 +50,7 @@ class TreeFactory
         return $res;
     }
 
-    private function getTaskPercent(array $tasks, array $progressList, Task $task): float
+    private function getTaskPercent(array $tasks, array $progressList, TaskEntity $task): float
     {
         $subtasks = $this->findSubTasks($task, $tasks);
         $percents = [];
@@ -65,12 +65,12 @@ class TreeFactory
     }
 
     /**
-     * @param Task $task
-     * @param Task[] $tasks
+     * @param TaskEntity $task
+     * @param TaskEntity[] $tasks
      *
-     * @return Task[]
+     * @return TaskEntity[]
      */
-    private function findSubTasks(Task $task, array $tasks): array
+    private function findSubTasks(TaskEntity $task, array $tasks): array
     {
         $res = [];
         foreach ($tasks as $subtask) {

@@ -5,8 +5,6 @@ namespace Roowix\Controller;
 use Roowix\App\Request;
 use Roowix\App\Response\Response;
 use Roowix\Model\Storage\EntityStorageInterface;
-use Roowix\Model\Task;
-use Roowix\Model\TaskProgress;
 use Roowix\Model\Tree\TreeFactory;
 
 class TreeController extends AbstractRestController
@@ -30,27 +28,9 @@ class TreeController extends AbstractRestController
 
     protected function get(Request $request): Response
     {
-        $tasks = [];
-        foreach ($this->tasksStorage->find([]) as $task) {
-            $tasks[] = new Task(
-                $task['task_id'],
-                $task['name'],
-                $task['type'],
-                $task['user_id'],
-                $task['goal'],
-                $task['parent_task_id']
-            );
-        }
+        $tasks = $this->tasksStorage->find([]);
 
-        $progressList = [];
-        foreach ($this->progressStorage->find([]) as $progress) {
-            $progressList[] = new TaskProgress(
-                $progress['task_progress_id'],
-                $progress['task_id'],
-                $progress['created_at'],
-                $progress['progress']
-            );
-        }
+        $progressList = $this->progressStorage->find([]);
 
         $tree = $this->treeFactory->create($tasks, $progressList);
 

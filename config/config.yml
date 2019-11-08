@@ -22,6 +22,7 @@ services:
         arguments:
             - '@postgres.connection'
             - 'public.user'
+            - Roowix\Model\Storage\UserEntity
     users.controller:
         class: Roowix\Controller\UsersController
         arguments:
@@ -32,6 +33,7 @@ services:
         arguments:
             - '@postgres.connection'
             - 'public.task'
+            - Roowix\Model\Storage\TaskEntity
     tasks.controller:
         class: Roowix\Controller\TasksController
         arguments:
@@ -42,6 +44,7 @@ services:
         arguments:
             - '@postgres.connection'
             - 'public.task_progress'
+            - Roowix\Model\Storage\ProgressEntity
     progress.controller:
         class: Roowix\Controller\ProgressController
         arguments:

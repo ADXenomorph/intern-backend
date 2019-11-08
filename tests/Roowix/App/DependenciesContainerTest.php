@@ -7,8 +7,11 @@ use Roowix\App\Config\ConfigYamlReader;
 use Roowix\App\DependenciesContainer;
 use PHPUnit\Framework\TestCase;
 use Roowix\App\Response\JsonResponseWriter;
+use Roowix\Controller\UsersController;
 use Roowix\DB\Connection;
+use Roowix\DB\PostgresEntityStorage;
 use Roowix\Model\UserEntityDescription;
+use Roowix\Tests\DB\CorrectTestEntity;
 
 class DependenciesContainerTest extends TestCase
 {
@@ -23,7 +26,7 @@ class DependenciesContainerTest extends TestCase
         $di->set('@postgres.connection', $mock);
 
         // act
-        $controller = $di->get(UserEntityDescription::class);
+        $controller = $di->get(UsersController::class);
 
         // assert
         $this->assertNotEmpty($controller);
