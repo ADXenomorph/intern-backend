@@ -152,7 +152,7 @@ class PostgresEntityStorage implements EntityStorageInterface
     {
         $newEntity = clone $this->entity;
         foreach ($data as $field => $value) {
-            $set = 'set' .  SnakeToPascal::convert($field);
+            $set = 'set' . SnakeToPascal::convert($field);
             $newEntity->$set($value);
         }
 

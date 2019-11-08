@@ -4,8 +4,6 @@ namespace Roowix\Tests\Model\Tree;
 
 use Roowix\Model\Storage\ProgressEntity;
 use Roowix\Model\Storage\TaskEntity;
-use Roowix\Model\Task;
-use Roowix\Model\TaskProgress;
 use Roowix\Model\Tree\TreeFactory;
 use PHPUnit\Framework\TestCase;
 
