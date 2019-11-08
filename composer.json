@@ -7,10 +7,8 @@
             "email": "kremnev@roowix.com"
         }
     ],
-    "require": {
-        "robmorgan/phinx": "^0.11.1"
-    },
     "require-dev": {
+        "robmorgan/phinx": "^0.11.1",
         "squizlabs/php_codesniffer": "3.*",
         "phpunit/phpunit": "^8.4"
     },

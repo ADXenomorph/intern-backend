@@ -27,42 +27,24 @@ class UsersController extends AbstractRestController
         return $this->returnResponse($res);
     }
 
-    protected function post(Request $request): Response
-    {
-        if ($request->has('user_id') && $this->exists($request->requireParam('user_id'))) {
-            return $this->update($request);
-        } else {
-            return $this->create($request);
-        }
-    }
-
-    private function exists(int $userId): bool
-    {
-        $res = $this->userStorage->find(["user_id" => $userId]);
-
-        return !empty($res);
-    }
-
-    private function update(Request $request): Response
+    protected function updatePost(Request $request): Response
     {
         $id = $request->requireParam('user_id');
-        $firstName = $request->requireParam('first_name');
-        $lastName = $request->requireParam('last_name');
+        $params = $request->allExcept(['user_id']);
 
         $res = $this->userStorage->update(
-            ['first_name' => $firstName, 'last_name' => $lastName],
+            $params,
             ['user_id' => $id]
         );
 
         return $this->returnResponse($res[0]);
     }
 
-    private function create(Request $request): Response
+    protected function createPut(Request $request): Response
     {
-        $firstName = $request->requireParam('first_name');
-        $lastName = $request->requireParam('last_name');
+        $params = $request->allExcept(['user_id']);
 
-        $res = $this->userStorage->create(['first_name' => $firstName, 'last_name' => $lastName]);
+        $res = $this->userStorage->create($params);
 
         return $this->returnResponse($res[0]);
     }

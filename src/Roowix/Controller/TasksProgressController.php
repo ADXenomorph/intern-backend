@@ -32,7 +32,7 @@ class TasksProgressController extends AbstractRestController
         return $this->returnResponse($res);
     }
 
-    protected function post(Request $request): Response
+    protected function updatePost(Request $request): Response
     {
         $taskId = $request->requireParam('task_id');
         $progress = $request->requireParam('progress');

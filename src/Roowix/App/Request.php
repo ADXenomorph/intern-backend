@@ -59,4 +59,14 @@ class Request
     {
         return $this->params;
     }
+
+    /**
+     * @param string[] $names
+     *
+     * @return array
+     */
+    public function allExcept(array $names): array
+    {
+        return array_diff_assoc($this->all(), array_flip($names));
+    }
 }

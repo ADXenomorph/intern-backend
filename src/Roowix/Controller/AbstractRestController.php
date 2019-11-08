@@ -19,13 +19,12 @@ abstract class AbstractRestController implements ControllerInterface
         switch ($request->getMethod()) {
             case 'GET':
                 return $this->get($request);
-                break;
+            case 'PUT':
+                return $this->createPut($request);
             case 'POST':
-                return $this->post($request);
-                break;
+                return $this->updatePost($request);
             case 'DELETE':
                 return $this->delete($request);
-                break;
             default:
                 throw new Exception('Unsupported method ' . $request->getMethod());
         }
@@ -36,7 +35,12 @@ abstract class AbstractRestController implements ControllerInterface
         throw new Exception('Unsupported method ' . $request->getMethod());
     }
 
-    protected function post(Request $request): Response
+    protected function createPut(Request $request): Response
+    {
+        throw new Exception('Unsupported method ' . $request->getMethod());
+    }
+
+    protected function updatePost(Request $request): Response
     {
         throw new Exception('Unsupported method ' . $request->getMethod());
     }
