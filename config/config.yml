@@ -10,6 +10,10 @@ routes:
     /api/progress/: '@progress.controller'
     /api/progress/{task_progress_id}: '@progress.controller'
     /api/tree: '@tree.controller'
+    /api/groups: '@groups.controller'
+    /api/groups/{group_id}: '@groups.controller'
+    /api/groups/{group_id}/users: '@group.users.controller'
+    /api/groups/{group_id}/users/{user_id}: '@group.users.controller'
 
 services:
     postgres.connection:
@@ -61,3 +65,28 @@ services:
         class: Roowix\Controller\TasksProgressController
         arguments:
             - '@progress.entity.storage'
+
+    groups.entity.storage:
+        class: Roowix\DB\PostgresEntityStorage
+        arguments:
+            - '@postgres.connection'
+            - 'public.group'
+            - Roowix\Model\Storage\GroupEntity
+
+    group.users.entity.storage:
+        class: Roowix\DB\PostgresEntityStorage
+        arguments:
+            - '@postgres.connection'
+            - 'public.group_user'
+            - Roowix\Model\Storage\GroupUserEntity
+
+    groups.controller:
+        class: Roowix\Controller\GroupsController
+        arguments:
+            - '@groups.entity.storage'
+
+    group.users.controller:
+        class: Roowix\Controller\GroupUsersController
+        arguments:
+            - '@groups.entity.storage'
+            - '@group.users.entity.storage'

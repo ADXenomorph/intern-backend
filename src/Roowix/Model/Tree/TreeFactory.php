@@ -21,7 +21,7 @@ class TreeFactory
             $nodes[] = new TreeNode(
                 $task->getTaskId(),
                 $task->getName(),
-                $task->getUserId(),
+                $task->getAssigneeId(),
                 $this->getCurrentProgressByTaskId($progressList, $task->getTaskId()),
                 $task->getGoal(),
                 $this->getTaskPercent($tasks, $progressList, $task),

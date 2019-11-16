@@ -4,6 +4,9 @@ namespace Roowix\Model\Storage;
 
 class TaskEntity extends AbstractEntity
 {
+    public const ASSIGNEE_TYPE_USER = 'user';
+    public const ASSIGNEE_TYPE_GROUP = 'group';
+
     /** @var int */
     private $taskId;
     /** @var string */
@@ -11,7 +14,7 @@ class TaskEntity extends AbstractEntity
     /** @var string|null */
     private $type;
     /** @var int */
-    private $userId;
+    private $assigneeId;
     /** @var int|null */
     private $parentTaskId;
     /** @var int */
@@ -20,7 +23,8 @@ class TaskEntity extends AbstractEntity
     private $createdAt;
     /** @var string */
     private $updatedAt;
-
+    /** @var string */
+    private $assigneeType = self::ASSIGNEE_TYPE_USER;
 
     public function getPrimary(): string
     {
@@ -33,11 +37,12 @@ class TaskEntity extends AbstractEntity
             'task_id',
             'name',
             'type',
-            'user_id',
+            'assignee_id',
             'parent_task_id',
             'goal',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'assignee_type'
         ];
     }
 
@@ -77,14 +82,14 @@ class TaskEntity extends AbstractEntity
         return $this;
     }
 
-    public function getUserId(): int
+    public function getAssigneeId(): int
     {
-        return $this->userId;
+        return $this->assigneeId;
     }
 
-    public function setUserId(int $userId): self
+    public function setAssigneeId(int $assigneeId): self
     {
-        $this->userId = $userId;
+        $this->assigneeId = $assigneeId;
 
         return $this;
     }
@@ -134,6 +139,18 @@ class TaskEntity extends AbstractEntity
     public function setUpdatedAt(string $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getAssigneeType(): string
+    {
+        return $this->assigneeType;
+    }
+
+    public function setAssigneeType(string $assigneeType): self
+    {
+        $this->assigneeType = $assigneeType;
 
         return $this;
     }

@@ -9,7 +9,7 @@ class TreeNode
     /** @var string */
     private $name;
     /** @var int */
-    private $userId;
+    private $assigneeId;
     /** @var int */
     private $currentProgress;
     /** @var int */
@@ -22,7 +22,7 @@ class TreeNode
     public function __construct(
         int $taskId,
         string $name,
-        int $userId,
+        int $assigneeId,
         int $currentProgress,
         int $goal,
         float $percent,
@@ -30,7 +30,7 @@ class TreeNode
     ) {
         $this->taskId = $taskId;
         $this->name = $name;
-        $this->userId = $userId;
+        $this->assigneeId = $assigneeId;
         $this->currentProgress = $currentProgress;
         $this->goal = $goal;
         $this->percent = $percent;
@@ -42,7 +42,7 @@ class TreeNode
         return [
             'task_id' => $this->taskId,
             'name' => $this->name,
-            'user_id' => $this->userId,
+            'assignee_id' => $this->assigneeId,
             'current_progress' => $this->currentProgress,
             'goal' => $this->goal,
             'percent' => $this->percent,
@@ -60,9 +60,9 @@ class TreeNode
         return $this->name;
     }
 
-    public function getUserId(): int
+    public function getAssigneeId(): int
     {
-        return $this->userId;
+        return $this->assigneeId;
     }
 
     public function getCurrentProgress(): int

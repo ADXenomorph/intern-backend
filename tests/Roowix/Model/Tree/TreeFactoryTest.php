@@ -14,9 +14,9 @@ class TreeFactoryTest extends TestCase
         // arrange
         $factory = new TreeFactory();
         $tasks = [
-            (new TaskEntity())->setTaskId(1)->setName('task1')->setUserId(1)->setGoal(10),
-            (new TaskEntity())->setTaskId(2)->setName('task2')->setUserId(1)->setGoal(100),
-            (new TaskEntity())->setTaskId(3)->setName('task3')->setUserId(1)->setGoal(123),
+            (new TaskEntity())->setTaskId(1)->setName('task1')->setAssigneeId(1)->setGoal(10),
+            (new TaskEntity())->setTaskId(2)->setName('task2')->setAssigneeId(1)->setGoal(100),
+            (new TaskEntity())->setTaskId(3)->setName('task3')->setAssigneeId(1)->setGoal(123),
         ];
         $date = date('Y-m-d H:i:s', strtotime('-1 week'));
         $progress = [
