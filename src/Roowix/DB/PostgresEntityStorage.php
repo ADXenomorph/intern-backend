@@ -48,6 +48,8 @@ class PostgresEntityStorage implements EntityStorageInterface
 
     public function create(array $fields): EntityInterface
     {
+        $fields = $this->removeExtraFields($fields);
+
         if (!isset($fields['created_at'])) {
             $fields['created_at'] = date('Y-m-d H:i:s');
         }
@@ -67,11 +69,18 @@ class PostgresEntityStorage implements EntityStorageInterface
 
         $dbData = $this->connection->query($query);
 
-        return $this->mapArrayToEntity($dbData);
+        $res = [];
+        foreach ($dbData as $row) {
+            $res[] = $this->mapArrayToEntity($row);
+        }
+
+        return $res[0];
     }
 
     public function update(array $fields, array $filter): array
     {
+        $fields = $this->removeExtraFields($fields);
+
         if (!isset($fields['updated_at'])) {
             $fields['updated_at'] = date('Y-m-d H:i:s');
         }
@@ -197,5 +206,18 @@ class PostgresEntityStorage implements EntityStorageInterface
                 )
             );
         }
+    }
+
+    private function removeExtraFields(array $fields): array
+    {
+        foreach ($fields as $field => $value) {
+            if (!in_array($field, $this->entity->getFields())) {
+                unset($fields[$field]);
+            }
+        }
+
+        unset($fields[$this->entity->getPrimary()]);
+
+        return $fields;
     }
 }

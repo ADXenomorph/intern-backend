@@ -59,7 +59,9 @@ class Router
         foreach ($routePieces as $pieceIndex => $routePiece) {
             preg_match('/{(.*)}/', $routePiece, $paramName);
             if ($paramName && $paramName[1]) {
-                $params[$paramName[1]] = $uriPieces[$pieceIndex];
+                $params[$paramName[1]] = is_numeric($uriPieces[$pieceIndex])
+                    ? (int) $uriPieces[$pieceIndex]
+                    : $uriPieces[$pieceIndex];
             }
         }
 
