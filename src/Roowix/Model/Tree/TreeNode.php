@@ -10,6 +10,10 @@ class TreeNode
     private $name;
     /** @var int */
     private $assigneeId;
+    /** @var string */
+    private $assigneeName;
+    /** @var string */
+    private $assigneeType;
     /** @var int */
     private $currentProgress;
     /** @var int */
@@ -23,6 +27,8 @@ class TreeNode
         int $taskId,
         string $name,
         int $assigneeId,
+        string $assigneeName,
+        string $assigneeType,
         int $currentProgress,
         int $goal,
         float $percent,
@@ -31,6 +37,8 @@ class TreeNode
         $this->taskId = $taskId;
         $this->name = $name;
         $this->assigneeId = $assigneeId;
+        $this->assigneeName = $assigneeName;
+        $this->assigneeType = $assigneeType;
         $this->currentProgress = $currentProgress;
         $this->goal = $goal;
         $this->percent = $percent;
@@ -43,6 +51,8 @@ class TreeNode
             'task_id' => $this->taskId,
             'name' => $this->name,
             'assignee_id' => $this->assigneeId,
+            'assignee_name' => $this->assigneeName,
+            'assignee_type' => $this->assigneeType,
             'current_progress' => $this->currentProgress,
             'goal' => $this->goal,
             'percent' => $this->percent,
@@ -78,5 +88,15 @@ class TreeNode
     public function getParentTaskId(): ?int
     {
         return $this->parentTaskId;
+    }
+
+    public function getAssigneeName(): string
+    {
+        return $this->assigneeName;
+    }
+
+    public function getAssigneeType(): string
+    {
+        return $this->assigneeType;
     }
 }

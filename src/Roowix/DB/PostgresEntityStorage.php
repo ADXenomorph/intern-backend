@@ -70,7 +70,7 @@ class PostgresEntityStorage implements EntityStorageInterface
         return $this->mapArrayToEntity($dbData);
     }
 
-    public function update(array $fields, array $filter): EntityInterface
+    public function update(array $fields, array $filter): array
     {
         if (!isset($fields['updated_at'])) {
             $fields['updated_at'] = date('Y-m-d H:i:s');
@@ -85,7 +85,12 @@ class PostgresEntityStorage implements EntityStorageInterface
             )
         );
 
-        return $this->mapArrayToEntity($dbData);
+        $res = [];
+        foreach ($dbData as $row) {
+            $res[] = $this->mapArrayToEntity($row);
+        }
+
+        return $res;
     }
 
     public function delete(array $filter)
@@ -121,6 +126,15 @@ class PostgresEntityStorage implements EntityStorageInterface
                 continue;
             }
 
+            if (is_array($value)) {
+                $fields[$key] = array_map(function ($item) {
+                    return is_string($item)
+                        ? sprintf("'%s'", $item)
+                        : $item;
+                }, $value);
+                continue;
+            }
+
             throw new Exception("Invalid field value: " . $value);
         }
 
@@ -133,9 +147,13 @@ class PostgresEntityStorage implements EntityStorageInterface
         $equalPairs = [];
 
         foreach ($fields as $key => $value) {
-            $equalPairs[] = $value === null
-                ? sprintf("%s IS NULL", $key)
-                : sprintf("%s = %s", $key, $value);
+            if (is_array($value)) {
+                $equalPairs[] = sprintf("%s IN (%s)", $key, join(',', $value));
+            } else {
+                $equalPairs[] = $value === null
+                    ? sprintf("%s IS NULL", $key)
+                    : sprintf("%s = %s", $key, $value);
+            }
         }
 
         return $equalPairs;

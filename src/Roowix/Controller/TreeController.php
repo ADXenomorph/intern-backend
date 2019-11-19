@@ -15,15 +15,23 @@ class TreeController extends AbstractRestController
     private $progressStorage;
     /** @var TreeFactory */
     private $treeFactory;
+    /** @var EntityStorageInterface */
+    private $usersStorage;
+    /** @var EntityStorageInterface */
+    private $groupsStorage;
 
     public function __construct(
         EntityStorageInterface $tasksStorage,
         EntityStorageInterface $progressStorage,
-        TreeFactory $treeFactory
+        TreeFactory $treeFactory,
+        EntityStorageInterface $usersStorage,
+        EntityStorageInterface $groupsStorage
     ) {
         $this->tasksStorage = $tasksStorage;
         $this->progressStorage = $progressStorage;
         $this->treeFactory = $treeFactory;
+        $this->usersStorage = $usersStorage;
+        $this->groupsStorage = $groupsStorage;
     }
 
     protected function get(Request $request): Response
@@ -31,8 +39,10 @@ class TreeController extends AbstractRestController
         $tasks = $this->tasksStorage->find([]);
 
         $progressList = $this->progressStorage->find([]);
+        $users = $this->usersStorage->find([]);
+        $groups = $this->groupsStorage->find([]);
 
-        $tree = $this->treeFactory->create($tasks, $progressList);
+        $tree = $this->treeFactory->create($tasks, $progressList, $users, $groups);
 
         return $this->returnResponse($tree->toArray());
     }

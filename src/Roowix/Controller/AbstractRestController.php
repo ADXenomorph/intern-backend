@@ -2,6 +2,7 @@
 
 namespace Roowix\Controller;
 
+use JsonSerializable;
 use Roowix\App\Request;
 use Roowix\App\Response\Response;
 use Exception;
@@ -50,7 +51,12 @@ abstract class AbstractRestController implements ControllerInterface
         throw new Exception('Unsupported method ' . $request->getMethod());
     }
 
-    protected function returnResponse(array $payload): Response
+    /**
+     * @param JsonSerializable|array $payload
+     *
+     * @return Response
+     */
+    protected function returnResponse($payload): Response
     {
         return new Response(0, '', $payload);
     }

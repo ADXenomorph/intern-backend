@@ -5,6 +5,7 @@ namespace Roowix\Controller;
 use Roowix\App\Request;
 use Roowix\App\Response\Response;
 use Roowix\Model\Storage\EntityStorageInterface;
+use Roowix\Model\Storage\TaskEntity;
 
 class TasksController extends AbstractRestController
 {
@@ -32,6 +33,7 @@ class TasksController extends AbstractRestController
         $id = $request->requireParam('task_id');
         $params = $request->allExcept(['task_id']);
 
+        /** @var TaskEntity[] $res */
         $res = $this->tasksStorage->update(
             $params,
             ['task_id' => $id]

@@ -90,4 +90,9 @@ class UserEntity extends AbstractEntity
 
         return $this;
     }
+
+    public function getFullName(): string
+    {
+        return $this->getLastName() . ' ' . $this->getFirstName();
+    }
 }

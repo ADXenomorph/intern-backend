@@ -2,16 +2,23 @@
 
 namespace Roowix\App\Response;
 
+use JsonSerializable;
+
 class Response
 {
     /** @var int */
     private $status;
     /** @var string */
     private $message;
-    /** @var array */
+    /** @var array|JsonSerializable */
     private $payload;
 
-    public function __construct(int $status, string $message, array $payload)
+    /**
+     * @param int $status
+     * @param string $message
+     * @param array|JsonSerializable $payload
+     */
+    public function __construct(int $status, string $message, $payload)
     {
         $this->status = $status;
         $this->message = $message;
@@ -28,7 +35,7 @@ class Response
         return $this->message;
     }
 
-    public function getPayload(): array
+    public function getPayload()
     {
         return $this->payload;
     }

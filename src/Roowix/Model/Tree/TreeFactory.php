@@ -2,18 +2,22 @@
 
 namespace Roowix\Model\Tree;
 
+use Roowix\Model\Storage\GroupEntity;
 use Roowix\Model\Storage\ProgressEntity;
 use Roowix\Model\Storage\TaskEntity;
+use Roowix\Model\Storage\UserEntity;
 
 class TreeFactory
 {
     /**
      * @param TaskEntity[] $tasks
      * @param ProgressEntity[] $progressList
+     * @param UserEntity[] $users
+     * @param GroupEntity[] $groups
      *
      * @return Tree
      */
-    public function create(array $tasks, array $progressList): Tree
+    public function create(array $tasks, array $progressList, array $users, array $groups): Tree
     {
         $nodes = [];
 
@@ -22,6 +26,8 @@ class TreeFactory
                 $task->getTaskId(),
                 $task->getName(),
                 $task->getAssigneeId(),
+                $this->findAssigneeName($task->getAssigneeId(), $task->getAssigneeType(), $users, $groups),
+                $task->getAssigneeType(),
                 $this->getCurrentProgressByTaskId($progressList, $task->getTaskId()),
                 $task->getGoal(),
                 $this->getTaskPercent($tasks, $progressList, $task),
@@ -80,5 +86,32 @@ class TreeFactory
         }
 
         return $res;
+    }
+
+    /**
+     * @param int $id
+     * @param string $type
+     * @param UserEntity[] $users
+     * @param GroupEntity[] $groups
+     *
+     * @return string
+     */
+    private function findAssigneeName(int $id, string $type, array $users, array $groups): string
+    {
+        if ($type === TaskEntity::ASSIGNEE_TYPE_USER) {
+            foreach ($users as $user) {
+                if ($user->getUserId() === $id) {
+                    return $user->getFullName();
+                }
+            }
+        } else {
+            foreach ($groups as $group) {
+                if ($group->getGroupId() === $id) {
+                    return $group->getName();
+                }
+            }
+        }
+
+        return "not found";
     }
 }

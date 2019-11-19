@@ -27,7 +27,7 @@ class TreeFactoryTest extends TestCase
         ];
 
         // act
-        $tree = $factory->create($tasks, $progress);
+        $tree = $factory->create($tasks, $progress, [], []);
 
         // assert
         $this->assertEquals(5, $tree->getNodeByTaskId(1)->getCurrentProgress());

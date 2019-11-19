@@ -13,7 +13,13 @@ interface EntityStorageInterface
 
     public function create(array $fields): EntityInterface;
 
-    public function update(array $fields, array $filter): EntityInterface;
+    /**
+     * @param array $fields
+     * @param array $filter
+     *
+     * @return EntityInterface[]
+     */
+    public function update(array $fields, array $filter): array;
 
     public function delete(array $filter);
 }

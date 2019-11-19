@@ -14,6 +14,8 @@ routes:
     /api/groups/{group_id}: '@groups.controller'
     /api/groups/{group_id}/users: '@group.users.controller'
     /api/groups/{group_id}/users/{user_id}: '@group.users.controller'
+    /api/populated-groups: '@populated_groups.controller'
+    /api/populated-groups/{group_id}: '@populated_groups.controller'
 
 services:
     postgres.connection:
@@ -60,6 +62,8 @@ services:
             - '@tasks.entity.storage'
             - '@progress.entity.storage'
             - Roowix\Model\Tree\TreeFactory
+            - '@users.entity.storage'
+            - '@groups.entity.storage'
 
     tasks.progress.controller:
         class: Roowix\Controller\TasksProgressController
@@ -90,3 +94,10 @@ services:
         arguments:
             - '@groups.entity.storage'
             - '@group.users.entity.storage'
+
+    populated_groups.controller:
+        class: Roowix\Controller\PopulatedGroupsController
+        arguments:
+            - '@groups.entity.storage'
+            - '@group.users.entity.storage'
+            - '@users.entity.storage'
