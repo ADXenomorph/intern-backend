@@ -17,6 +17,9 @@ routes:
     /api/groups/{group_id}/users/{user_id}: '@group.users.controller'
     /api/populated-groups: '@populated_groups.controller'
     /api/populated-groups/{group_id}: '@populated_groups.controller'
+    /api/auth:
+        controller: '@auth.controller'
+        auth: false
 
 services:
     postgres.connection:
@@ -77,19 +80,16 @@ services:
             - '@postgres.connection'
             - 'public.group'
             - Roowix\Model\Storage\GroupEntity
-
     group.users.entity.storage:
         class: Roowix\DB\PostgresEntityStorage
         arguments:
             - '@postgres.connection'
             - 'public.group_user'
             - Roowix\Model\Storage\GroupUserEntity
-
     groups.controller:
         class: Roowix\Controller\GroupsController
         arguments:
             - '@groups.entity.storage'
-
     group.users.controller:
         class: Roowix\Controller\GroupUsersController
         arguments:
@@ -116,3 +116,22 @@ services:
             - '@groups.entity.storage'
             - '@group.users.entity.storage'
             - '@users.entity.storage'
+
+    auth.entity.storage:
+        class: Roowix\DB\PostgresEntityStorage
+        arguments:
+            - '@postgres.connection'
+            - 'public.auth'
+            - Roowix\Model\Storage\AuthEntity
+    auth_token.entity.storage:
+        class: Roowix\DB\AuthTokenStorage
+        arguments:
+            - '@postgres.connection'
+            - 'public.auth_token'
+            - Roowix\Model\Storage\AuthTokenEntity
+    auth.controller:
+        class: Roowix\Controller\AuthController
+        arguments:
+            - '@auth.entity.storage'
+            - '@auth_token.entity.storage'
+            - Roowix\Model\Authorization

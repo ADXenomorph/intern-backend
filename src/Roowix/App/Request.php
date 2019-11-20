@@ -10,11 +10,14 @@ class Request
     private $method;
     /** @var array */
     private $params;
+    /** @var array */
+    private $headers;
 
-    public function __construct(string $method, array $params)
+    public function __construct(string $method, array $params, array $headers)
     {
         $this->method = $method;
         $this->params = $params;
+        $this->headers = $headers;
     }
 
     public function getMethod(): string
@@ -68,5 +71,15 @@ class Request
     public function allExcept(array $names): array
     {
         return array_diff_assoc($this->all(), array_flip($names));
+    }
+
+    public function hasHeader(string $name): bool
+    {
+        return array_key_exists($name, $this->headers);
+    }
+
+    public function getHeader(string $name): ?string
+    {
+        return $this->headers[$name];
     }
 }

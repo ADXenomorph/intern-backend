@@ -11,18 +11,8 @@ class Router
 
     public function __construct(array $routerConfig)
     {
-        foreach ($routerConfig as $route => $controller) {
-            $route = rtrim($route, '/');
-
-            $regexRoute = $route;
-            $regexRoute = str_replace('/', '\/', $regexRoute);
-            $regexRoute = preg_replace('/{[^{}]*}/', '[0-9a-zA-Z-_]*', $regexRoute);
-            $regexRoute = '/^' . $regexRoute . '\/?$/';
-            $this->routerConfig[$route] = [
-                'controller' => $controller,
-                'regex' => $regexRoute,
-                'route' => $route
-            ];
+        foreach ($routerConfig as $route => $routeConfig) {
+            $this->routerConfig[$route] = $this->processRoute($route, $routeConfig);
         }
     }
 
@@ -30,7 +20,39 @@ class Router
     {
         $route = $this->getRoute($uri);
 
-        return new Route($route['controller'], $this->getParams($uri, $route['route']));
+        return new Route($route['controller'], $this->getParams($uri, $route['route']), $route['auth']);
+    }
+
+    private function processRoute(string $route, $routeConfig): array
+    {
+        $auth = true;
+        if (is_string($routeConfig)) {
+            $controller = $routeConfig;
+        } else {
+            $this->validateArrayRouteConfig($route, $routeConfig);
+            $controller = $routeConfig['controller'];
+            $auth = !isset($routeConfig['auth']) || !$routeConfig['auth'];
+        }
+        $route = rtrim($route, '/');
+
+        $regexRoute = $route;
+        $regexRoute = str_replace('/', '\/', $regexRoute);
+        $regexRoute = preg_replace('/{[^{}]*}/', '[0-9a-zA-Z-_]*', $regexRoute);
+        $regexRoute = '/^' . $regexRoute . '\/?$/';
+
+        return [
+            'controller' => $controller,
+            'regex' => $regexRoute,
+            'route' => $route,
+            'auth' => $auth
+        ];
+    }
+
+    private function validateArrayRouteConfig(string $route, array $routeConfig)
+    {
+        if (!isset($routeConfig['controller'])) {
+            throw new Exception(sprintf('Route %s is missing controller section', $route));
+        }
     }
 
     private function getRoute(string $uri): array

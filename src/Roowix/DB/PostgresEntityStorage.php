@@ -10,11 +10,11 @@ use Roowix\Utils\SnakeToPascal;
 class PostgresEntityStorage implements EntityStorageInterface
 {
     /** @var Connection */
-    private $connection;
+    protected $connection;
     /** @var string */
-    private $dbName;
+    protected $dbName;
     /** @var EntityInterface */
-    private $entity;
+    protected $entity;
 
     public function __construct(
         Connection $connection,
@@ -191,7 +191,7 @@ class PostgresEntityStorage implements EntityStorageInterface
         return count($pairs) ? "WHERE " . join(' AND ', $pairs) : '';
     }
 
-    private function mapArrayToEntity(array $data): EntityInterface
+    protected function mapArrayToEntity(array $data): EntityInterface
     {
         $newEntity = clone $this->entity;
         foreach ($data as $field => $value) {

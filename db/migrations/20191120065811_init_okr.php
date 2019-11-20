@@ -13,6 +13,24 @@ class InitOkr extends AbstractMigration
             ->addColumn('updated_at', 'datetime')
             ->create();
 
+        $this->table('public.auth', ['id' => 'auth_id'])
+            ->addColumn('user_id', 'integer')
+            ->addColumn('email', 'text')
+            ->addColumn('password_hash', 'text')
+            ->addColumn('created_at', 'datetime')
+            ->addColumn('updated_at', 'datetime')
+            ->addForeignKey('user_id', 'public.user', 'user_id')
+            ->create();
+
+        $this->table('public.auth_token', ['id' => 'auth_token_id'])
+            ->addColumn('auth_id', 'integer')
+            ->addColumn('token', 'text')
+            ->addColumn('token_expiration_date', 'text')
+            ->addColumn('created_at', 'datetime')
+            ->addColumn('updated_at', 'datetime')
+            ->addForeignKey('auth_id', 'public.auth', 'auth_id')
+            ->create();
+
         $this->table('public.task', ['id' => 'task_id'])
             ->addColumn('name', 'text')
             ->addColumn('type', 'text', ['null' => true])
@@ -60,7 +78,20 @@ class InitOkr extends AbstractMigration
                 (4, 'Maksim', 'Belyakov', NOW(), NOW()),
                 (5, 'Vasiliy', 'Sergeev', NOW(), NOW()),
                 (6, 'Andrew', 'Malyukhin', NOW(), NOW()),
-                (8, 'Mikhail', 'Maciejewski', NOW(), NOW())
+                (7, 'Mikhail', 'Maciejewski', NOW(), NOW())
+            ;
+        ");
+
+        // salt 4155c877ea0aeef35784caf46e85e95aa8226d41%
+        $this->execute("            
+            INSERT INTO public.auth(user_id, email, password_hash, created_at, updated_at) VALUES
+                (1, 'kremnev@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
+                (2, 'doe@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
+                (3, 'ivanov@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
+                (4, 'belyakov@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
+                (5, 'sergeev@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
+                (6, 'malyukhin@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
+                (7, 'maciejewski@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW())
             ;
         ");
 
