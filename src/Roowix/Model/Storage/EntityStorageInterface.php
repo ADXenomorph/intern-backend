@@ -2,8 +2,18 @@
 
 namespace Roowix\Model\Storage;
 
+use Exception;
+
 interface EntityStorageInterface
 {
+    /**
+     * @param int $id
+     *
+     * @return EntityInterface
+     * @throws Exception
+     */
+    public function get(int $id): EntityInterface;
+
     /**
      * @param array $filter
      *

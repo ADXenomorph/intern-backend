@@ -5,9 +5,9 @@ namespace Roowix\Controller;
 use Exception;
 use Roowix\App\Request;
 use Roowix\App\Response\Response;
+use Roowix\Model\Group\GroupUsersLoader;
 use Roowix\Model\Storage\EntityStorageInterface;
 use Roowix\Model\Storage\GroupEntity;
-use Roowix\Model\Storage\GroupUserEntity;
 
 class PopulatedGroupsController extends AbstractRestController
 {
@@ -15,17 +15,17 @@ class PopulatedGroupsController extends AbstractRestController
     private $groupStorage;
     /** @var EntityStorageInterface */
     private $groupUserStorage;
-    /** @var EntityStorageInterface */
-    private $userStorage;
+    /** @var GroupUsersLoader */
+    private $groupUsersLoader;
 
     public function __construct(
         EntityStorageInterface $groupStorage,
         EntityStorageInterface $groupUserStorage,
-        EntityStorageInterface $userStorage
+        GroupUsersLoader $groupUsersLoader
     ) {
         $this->groupStorage = $groupStorage;
         $this->groupUserStorage = $groupUserStorage;
-        $this->userStorage = $userStorage;
+        $this->groupUsersLoader = $groupUsersLoader;
     }
 
     protected function get(Request $request): Response
@@ -78,29 +78,22 @@ class PopulatedGroupsController extends AbstractRestController
         return $this->returnResponse($newGroup);
     }
 
-    private function populateGroup(GroupEntity $group): array
+    protected function delete(Request $request): Response
     {
-        $userIds = $this->getUserIdsByGroupId($group->getGroupId());
+        $id = $request->requireParam('group_id');
 
-        $users = $userIds
-            ? $this->userStorage->find(['user_id' => $userIds])
-            : [];
-        return [
-            'group' => $group,
-            'users' => $users
-        ];
+        $this->groupUserStorage->delete(['group_id' => $id]);
+        $this->groupStorage->delete(['group_id' => $id]);
+
+        return $this->returnResponse([]);
     }
 
-    private function getUserIdsByGroupId(int $groupId): array
+    private function populateGroup(GroupEntity $group): array
     {
-        /** @var GroupUserEntity[] $groupUsers */
-        $groupUsers = $this->groupUserStorage->find(['group_id' => $groupId]);
-        $userIds = [];
-        foreach ($groupUsers as $groupUser) {
-            $userIds[] = $groupUser->getUserId();
-        }
-
-        return $userIds;
+        return [
+            'group' => $group,
+            'users' => $this->groupUsersLoader->getGroupUsers($group)
+        ];
     }
 
     /**

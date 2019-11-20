@@ -4,6 +4,7 @@ properties:
 routes:
     /api/users/: '@users.controller'
     /api/users/{user_id}: '@users.controller'
+    /api/users/{user_id}/tasks: '@user.tasks.controller'
     /api/tasks/: '@tasks.controller'
     /api/tasks/{task_id}: '@tasks.controller'
     /api/tasks/{task_id}/progress: '@tasks.progress.controller'
@@ -97,6 +98,20 @@ services:
 
     populated_groups.controller:
         class: Roowix\Controller\PopulatedGroupsController
+        arguments:
+            - '@groups.entity.storage'
+            - '@group.users.entity.storage'
+            - '@group.users.loader'
+
+    user.tasks.controller:
+        class: Roowix\Controller\UserTasksController
+        arguments:
+            - '@tasks.entity.storage'
+            - '@users.entity.storage'
+            - '@group.users.loader'
+
+    group.users.loader:
+        class: Roowix\Model\Group\GroupUsersLoader
         arguments:
             - '@groups.entity.storage'
             - '@group.users.entity.storage'

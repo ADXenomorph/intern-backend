@@ -28,6 +28,22 @@ class PostgresEntityStorage implements EntityStorageInterface
         $this->validateEntity($entity);
     }
 
+    public function get(int $id): EntityInterface
+    {
+        $res = $this->find([$this->entity->getPrimary() => $id]);
+        if (empty($res)) {
+            throw new Exception(
+                sprintf(
+                    'Entity %s not found by id %s',
+                    get_class($this->entity),
+                    $id
+                )
+            );
+        }
+
+        return $res[0];
+    }
+
     public function find(array $filter): array
     {
         $dbData = $this->connection->select(

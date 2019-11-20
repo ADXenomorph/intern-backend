@@ -9,19 +9,19 @@ class FillGroups extends AbstractMigration
         $this->table('public.group')
             ->insert([
                 'group_id' => 1,
-                'name' => 'group1',
+                'name' => 'Roowix',
                 'created_at' => 'NOW()',
                 'updated_at' => 'NOW()',
             ])
             ->insert([
                 'group_id' => 2,
-                'name' => 'group2',
+                'name' => 'Management',
                 'created_at' => 'NOW()',
                 'updated_at' => 'NOW()',
             ])
             ->insert([
                 'group_id' => 3,
-                'name' => 'group3',
+                'name' => 'Developers',
                 'created_at' => 'NOW()',
                 'updated_at' => 'NOW()',
             ])
@@ -29,7 +29,7 @@ class FillGroups extends AbstractMigration
 
         $this->execute("
             INSERT INTO public.group_user(group_id, user_id, created_at, updated_at) 
-            SELECT 1, user_id, NOW(), NOW() FROM public.user WHERE last_name = 'Kremnev';
+            SELECT 3, user_id, NOW(), NOW() FROM public.user WHERE last_name = 'Kremnev';
             
             INSERT INTO public.group_user(group_id, user_id, created_at, updated_at) 
             SELECT 2, user_id, NOW(), NOW() FROM public.user WHERE last_name <> 'Kremnev';

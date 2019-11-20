@@ -29,10 +29,18 @@ class DropTaskForeign extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function up()
     {
         $this->table('public.task')
             ->dropForeignKey('user_id')
             ->save();
+
+        $this->table('public.task')
+            ->dropForeignKey('assignee_id')
+            ->save();
+    }
+
+    public function down()
+    {
     }
 }
