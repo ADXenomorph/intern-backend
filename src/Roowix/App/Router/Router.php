@@ -31,7 +31,7 @@ class Router
         } else {
             $this->validateArrayRouteConfig($route, $routeConfig);
             $controller = $routeConfig['controller'];
-            $auth = !isset($routeConfig['auth']) || !$routeConfig['auth'];
+            $auth = !isset($routeConfig['auth']) || $routeConfig['auth'];
         }
         $route = rtrim($route, '/');
 

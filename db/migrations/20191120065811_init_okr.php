@@ -22,15 +22,6 @@ class InitOkr extends AbstractMigration
             ->addForeignKey('user_id', 'public.user', 'user_id')
             ->create();
 
-        $this->table('public.auth_token', ['id' => 'auth_token_id'])
-            ->addColumn('auth_id', 'integer')
-            ->addColumn('token', 'text')
-            ->addColumn('token_expiration_date', 'text')
-            ->addColumn('created_at', 'datetime')
-            ->addColumn('updated_at', 'datetime')
-            ->addForeignKey('auth_id', 'public.auth', 'auth_id')
-            ->create();
-
         $this->table('public.task', ['id' => 'task_id'])
             ->addColumn('name', 'text')
             ->addColumn('type', 'text', ['null' => true])
@@ -83,17 +74,19 @@ class InitOkr extends AbstractMigration
         ");
 
         // salt 4155c877ea0aeef35784caf46e85e95aa8226d41%
+        // @codingStandardsIgnoreStart
         $this->execute("            
             INSERT INTO public.auth(user_id, email, password_hash, created_at, updated_at) VALUES
-                (1, 'kremnev@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
-                (2, 'doe@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
-                (3, 'ivanov@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
-                (4, 'belyakov@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
-                (5, 'sergeev@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
-                (6, 'malyukhin@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW()),
-                (7, 'maciejewski@test.com', '21cfde595f9e3d6b3ccdac5a68d30a4e71b7647b', NOW(), NOW())
+                (1, 'kremnev@test.com', '3cabf24d50956922d40965884331402978993cc4371ba0fb31f23b23961de208', NOW(), NOW()),
+                (2, 'doe@test.com', '3cabf24d50956922d40965884331402978993cc4371ba0fb31f23b23961de208', NOW(), NOW()),
+                (3, 'ivanov@test.com', '3cabf24d50956922d40965884331402978993cc4371ba0fb31f23b23961de208', NOW(), NOW()),
+                (4, 'belyakov@test.com', '3cabf24d50956922d40965884331402978993cc4371ba0fb31f23b23961de208', NOW(), NOW()),
+                (5, 'sergeev@test.com', '3cabf24d50956922d40965884331402978993cc4371ba0fb31f23b23961de208', NOW(), NOW()),
+                (6, 'malyukhin@test.com', '3cabf24d50956922d40965884331402978993cc4371ba0fb31f23b23961de208', NOW(), NOW()),
+                (7, 'maciejewski@test.com', '3cabf24d50956922d40965884331402978993cc4371ba0fb31f23b23961de208', NOW(), NOW())
             ;
         ");
+        // @codingStandardsIgnoreEnd
 
         $this->execute("
             INSERT INTO public.group(group_id, name, created_at, updated_at)

@@ -8,7 +8,7 @@ use Roowix\App\Response\JsonResponseWriter;
 use Roowix\App\Router\Router;
 use Roowix\Controller\ControllerInterface;
 use Exception;
-use Roowix\DB\AuthTokenStorage;
+use Roowix\Model\Authorization;
 use Throwable;
 
 class App
@@ -21,7 +21,7 @@ class App
     private $router;
     /** @var JsonResponseWriter */
     private $responseWriter;
-    /** @var AuthTokenStorage */
+    /** @var Authorization */
     private $auth;
 
     public function __construct(string $configPath)
@@ -32,7 +32,7 @@ class App
         $this->di = new DependenciesContainer($this->config);
         $this->router = new Router($this->config->getRoutes());
         $this->responseWriter = $this->di->get(JsonResponseWriter::class);
-        $this->auth = $this->di->get('@auth_token.entity.storage');
+        $this->auth = new Authorization();
     }
 
     private function setExceptionHandlers()
@@ -76,14 +76,15 @@ class App
 
         $request = new Request($method, array_merge($get, $post, $route->getParams()), $headers);
 
-        if (
-            $route->requiresAuth()
-            && (!$request->hasHeader('Authorization')
-                || !$this->auth->validate($request->getHeader('Authorization'), time())
-            )
-        ) {
-            header("HTTP/1.1 401 Unauthorized");
-            exit;
+        if ($route->requiresAuth()) {
+            $authPayload = $request->hasHeader('Authorization')
+                ? $this->auth->getAuthHeaderPayload($request->getHeader('Authorization'))
+                : null;
+            if (!$authPayload) {
+                header("HTTP/1.1 401 Unauthorized");
+                exit;
+            }
+            $request->setAuthPayload($authPayload);
         }
 
         $response = $controller->run($request);

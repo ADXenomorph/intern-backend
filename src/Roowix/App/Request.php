@@ -12,12 +12,26 @@ class Request
     private $params;
     /** @var array */
     private $headers;
+    /** @var array */
+    private $authPayload;
 
     public function __construct(string $method, array $params, array $headers)
     {
         $this->method = $method;
         $this->params = $params;
         $this->headers = $headers;
+    }
+
+    public function getAuthPayload(): array
+    {
+        return $this->authPayload;
+    }
+
+    public function setAuthPayload(array $authPayload): self
+    {
+        $this->authPayload = $authPayload;
+
+        return $this;
     }
 
     public function getMethod(): string

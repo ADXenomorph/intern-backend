@@ -123,15 +123,8 @@ services:
             - '@postgres.connection'
             - 'public.auth'
             - Roowix\Model\Storage\AuthEntity
-    auth_token.entity.storage:
-        class: Roowix\DB\AuthTokenStorage
-        arguments:
-            - '@postgres.connection'
-            - 'public.auth_token'
-            - Roowix\Model\Storage\AuthTokenEntity
     auth.controller:
         class: Roowix\Controller\AuthController
         arguments:
             - '@auth.entity.storage'
-            - '@auth_token.entity.storage'
             - Roowix\Model\Authorization

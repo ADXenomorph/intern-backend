@@ -5,7 +5,6 @@ namespace Roowix\Controller;
 use Exception;
 use Roowix\App\Request;
 use Roowix\App\Response\Response;
-use Roowix\DB\AuthTokenStorage;
 use Roowix\Model\Authorization;
 use Roowix\Model\Storage\AuthEntity;
 use Roowix\Model\Storage\EntityStorageInterface;
@@ -14,18 +13,14 @@ class AuthController extends AbstractRestController
 {
     /** @var EntityStorageInterface */
     private $authStorage;
-    /** @var AuthTokenStorage */
-    private $tokenStorage;
     /** @var Authorization */
     private $auth;
 
     public function __construct(
         EntityStorageInterface $authStorage,
-        AuthTokenStorage $tokenStorage,
         Authorization $auth
     ) {
         $this->authStorage = $authStorage;
-        $this->tokenStorage = $tokenStorage;
         $this->auth = $auth;
     }
 
@@ -33,8 +28,10 @@ class AuthController extends AbstractRestController
     {
         $token = $request->requireParam('token');
 
+        $this->auth->decodeJwt($token);
+
         return $this->returnResponse([
-            'valid' => $this->tokenStorage->validate($token, time())
+            'valid' => true
         ]);
     }
 
@@ -52,21 +49,12 @@ class AuthController extends AbstractRestController
         if (empty($auth)) {
             throw new Exception('Authorization failed');
         }
-        $auth = $auth[0];
 
-        $this->tokenStorage->delete(['auth_id' => $auth->getAuthId()]);
-
-        $token = $this->auth->getToken($email, $passwordHash);
-        $expirationDate = strtotime('+1 week');
-        $this->tokenStorage->create([
-            'auth_id' => $auth->getAuthId(),
-            'token' => $token,
-            'token_expiration_date' => strtotime('+1 week')
-        ]);
+        $token = $this->auth->encodeJwt(['user_id' => $auth[0]->getUserId()]);
 
         return $this->returnResponse([
             'token' => $token,
-            'expiration_date' => $expirationDate
+            'user_id' => $auth[0]->getUserId()
         ]);
     }
 }
