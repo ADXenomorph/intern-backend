@@ -120,5 +120,12 @@ class InitOkr extends AbstractMigration
 
     public function down()
     {
+        $this->table('public.task_progress')->drop()->save();
+        $this->table('public.task')->drop()->save();
+
+        $this->table('public.group_user')->drop()->save();
+        $this->table('public.group')->drop()->save();
+
+        $this->table('public.user')->drop()->save();
     }
 }
