@@ -17,9 +17,11 @@ routes:
     /api/groups/{group_id}/users/{user_id}: '@group.users.controller'
     /api/populated-groups: '@populated_groups.controller'
     /api/populated-groups/{group_id}: '@populated_groups.controller'
+    /api/auth/password: '@auth.password.controller'
     /api/auth:
         controller: '@auth.controller'
         auth: false
+
 
 services:
     postgres.connection:
@@ -125,6 +127,11 @@ services:
             - Roowix\Model\Storage\AuthEntity
     auth.controller:
         class: Roowix\Controller\AuthController
+        arguments:
+            - '@auth.entity.storage'
+            - Roowix\Model\Authorization
+    auth.password.controller:
+        class: Roowix\Controller\AuthPasswordController
         arguments:
             - '@auth.entity.storage'
             - Roowix\Model\Authorization
